@@ -1,0 +1,50 @@
+services:
+  nginx:
+    image: nginx:latest # Use the latest version of the Nginx image
+    container_name: ${PROJECT_NAME}-nginx # Dynamically name the container based on the project name
+    ports:
+      - '80:80'  # Map port 80 on the host to port 80 in the container
+      - '443:443' # Map port 443 on the host to port 443 in the container (for SSL)
+    volumes:
+      - "./nginx/:/etc/nginx/templates/" # Mount the local nginx configuration directory to the container's templates directory
+      - ./certs:/etc/certs # Mount the local certificates directory to the container's certificates directory
+    environment:
+      - "NGINX_ENVSUBST_TEMPLATE_SUFFIX=.conf" # Set the template suffix for environment variable substitution in Nginx configs
+      - "DOMAIN=${DOMAIN}" # Pass the domain name as an environment variable
+    depends_on:
+      - wordpress # Ensure the WordPress container starts before Nginx
+    restart: always # Automatically restart the container if it fails
+
+  db:
+    image: mysql:8.0 # Use MySQL 8.0 image
+    container_name: ${PROJECT_NAME}-mysql # Dynamically name the container based on the project name
+    volumes:
+      - ./db:/var/lib/mysql # Mount the local db directory to persist MySQL data
+      - ./config/mysql/my.cnf:/etc/mysql/my.cnf # Mount custom MySQL configuration file
+    restart: always # Automatically restart the container if it fails
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Set the MySQL root password
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}  # Set the WordPress database name
+      MYSQL_USER: ${WORDPRESS_DB_USER}  # Set the WordPress database user
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD} # Set the WordPress database user's password
+
+  wordpress:
+    depends_on: 
+      - db # Ensure the database container starts before WordPress
+    build:
+      context: ./docker # Specify the build context for the WordPress image (Dockerfile location)
+    container_name: ${PROJECT_NAME}-wordpress # Dynamically name the container
+    restart: always # Automatically restart the container if it fails
+    volumes: 
+      - ./wordpress:/var/www/html # Mount the local WordPress directory to the container's webroot
+      - ./config/php/php.ini:/usr/local/etc/php/conf.d/php.ini # Mount custom PHP configuration
+      - ./config/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini # Mount Xdebug configuration
+    environment:
+      WORDPRESS_DB_HOST: db # Set the database host (container name 'db')
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME} # Set the database name
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER} # Set the database user
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}  # Set the database password
+      WORDPRESS_DEBUG: ${WORDPRESS_DEBUG}  # Set WordPress debug mode
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Allow communication with the host machine (useful for Xdebug)
+

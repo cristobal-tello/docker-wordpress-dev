@@ -46,3 +46,9 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
+
+# Ignore .env file
+.env
+
+# Ignore Visual Studio Code settings directory
+.vscode
