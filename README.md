@@ -3,23 +3,13 @@
 ## .env file
 You need to create a .env file in the root directory of this repository. For example:
 
-```sh
-IP=127.0.0.1
-PROJECT_NAME=<replace_by_your_project_name>
-DOMAIN=<replace_by_your_project_name>.local
-WORDPRESS_DB_NAME=<wordpress_database_name>
-WORDPRESS_DB_USER=<wordpress_database_user>
-WORDPRESS_DB_PASSWORD=<wordpress_database_password>
-MYSQL_ROOT_PASSWORD=<mysql_root_password>
-WORDPRESS_DEBUG=<true/false>
-```
-
-Another example:
-
 ```bash
 IP=127.0.0.1
 PROJECT_NAME=foo
 DOMAIN=foo.local
+NGINX_CONTAINER_NAME=foo-nginx
+WORDPRESS_CONTAINER_NAME=foo-wordpress
+MYSQL_CONTAINER_NAME=foo-mysql
 WORDPRESS_DB_NAME=wp-foo
 WORDPRESS_DB_USER=wp_foo_db_user
 WORDPRESS_DB_PASSWORD=wp123456
@@ -65,5 +55,3 @@ By default, this repository enable xdebug (see docker/Dockerfile). If you use Vi
     ]
 }
 ```
-
-

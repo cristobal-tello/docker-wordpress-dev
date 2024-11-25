@@ -24,27 +24,24 @@ restart:
 # Target: bash
 # Description: Opens a bash shell inside the WordPress container.
 bash:
-	docker exec -it $(PROJECT_NAME)-wordpress bash # Assumes the container name is based on PROJECT_NAME
+	docker exec -it $(WORDPRESS_CONTAINER_NAME) bash
 
 # Target: mysql_bash
 # Description: Opens a bash shell inside the MySQL container.
 mysql_bash:
-	docker exec -it $(PROJECT_NAME)-mysql bash # Assumes the container name is prefixed with "db-"
+	docker exec -it $(MYSQL_CONTAINER_NAME) bash
 
 # Target: logs
 # Description: Displays the logs of the main application container (likely the WordPress container).  The exact container depends on docker-compose.yml
 logs:
-	docker logs $(PROJECT_NAME)
+	docker logs $(WORDPRESS_CONTAINER_NAME)
 
 # Target: nginx_logs
 # Description: Displays the logs of the Nginx container.
 nginx_logs:
-	docker logs $(PROJECT_NAME)-nginx # Assumes the container name is prefixed with "nginx-"
-
+	docker logs $(NGINX_CONTAINER_NAME)
 
 # Target: mysql_logs
 # Description: Displays the last 100 lines of the MySQL general log.
 mysql_logs:
-	docker exec -it $(PROJECT_NAME)-mysql tail -n 100 /var/lib/mysql/general.log
-
-
+	docker exec -it $(MYSQL_CONTAINER_NAME) tail -n 100 /var/lib/mysql/general.log

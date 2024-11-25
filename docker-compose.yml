@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:latest # Use the latest version of the Nginx image
-    container_name: ${PROJECT_NAME}-nginx # Dynamically name the container based on the project name
+    container_name: ${NGINX_CONTAINER_NAME}
     ports:
       - '80:80'  # Map port 80 on the host to port 80 in the container
       - '443:443' # Map port 443 on the host to port 443 in the container (for SSL)
@@ -17,7 +17,7 @@ services:
 
   db:
     image: mysql:8.0 # Use MySQL 8.0 image
-    container_name: ${PROJECT_NAME}-mysql # Dynamically name the container based on the project name
+    container_name: ${MYSQL_CONTAINER_NAME}
     volumes:
       - ./db:/var/lib/mysql # Mount the local db directory to persist MySQL data
       - ./config/mysql/my.cnf:/etc/mysql/my.cnf # Mount custom MySQL configuration file
@@ -33,7 +33,7 @@ services:
       - db # Ensure the database container starts before WordPress
     build:
       context: ./docker # Specify the build context for the WordPress image (Dockerfile location)
-    container_name: ${PROJECT_NAME}-wordpress # Dynamically name the container
+    container_name: ${WORDPRESS_CONTAINER_NAME}
     restart: always # Automatically restart the container if it fails
     volumes: 
       - ./wordpress:/var/www/html # Mount the local WordPress directory to the container's webroot
